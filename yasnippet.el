@@ -3438,30 +3438,31 @@ If so cleans up the whole snippet up."
         ;;   )
         ;; (yas--move-to-field snippet active-field)
         ;; (overlay-end (yas--snippet-control-overlay snippet))
-        (yas--letenv (yas--snippet-expand-env snippet)
-          ;; Note: the `force-exit' field could be a transform in case of
-          ;; ${0: ...}, see `yas--move-to-field'.
-          (setq snippet-exit-transform (yas--snippet-force-exit snippet))
-          (cond ((or snippet-exit-transform
-                     (not (and active-field (yas--field-contains-point-p active-field))))
-                 (setq snippet-exit-transform nil)
-                 (setq snippets-left (delete snippet snippets-left))
-                 (setf (yas--snippet-force-exit snippet) nil)
-                 (setq snippet-exit-hook yas-after-exit-snippet-hook)
-                 (yas--commit-snippet snippet))
-                ((and active-field
-                      (or (not yas--active-field-overlay)
-                          (not (overlay-buffer yas--active-field-overlay))))
-                 ;;
-                 ;; stacked expansion: this case is mainly for recent
-                 ;; snippet exits that place us back int the field of
-                 ;; another snippet
-                 ;;
-                 (save-excursion
-                   (yas--move-to-field snippet active-field)
-                   (yas--update-mirrors snippet)))
-                (t
-                 nil)))))
+        (setq snippet-exit-transform (yas--snippet-force-exit snippet))
+        ;; (yas--letenv (yas--snippet-expand-env snippet))
+        ;; Note: the `force-exit' field could be a transform in case of
+        ;; ${0: ...}, see `yas--move-to-field'.
+        
+        (cond ((or snippet-exit-transform
+                   (not (and active-field (yas--field-contains-point-p active-field))))
+               (setq snippet-exit-transform nil)
+               (setq snippets-left (delete snippet snippets-left))
+               (setf (yas--snippet-force-exit snippet) nil)
+               (setq snippet-exit-hook yas-after-exit-snippet-hook)
+               (yas--commit-snippet snippet))
+              ((and active-field
+                    (or (not yas--active-field-overlay)
+                        (not (overlay-buffer yas--active-field-overlay))))
+               ;;
+               ;; stacked expansion: this case is mainly for recent
+               ;; snippet exits that place us back int the field of
+               ;; another snippet
+               ;;
+               (save-excursion
+                 (yas--move-to-field snippet active-field)
+                 (yas--update-mirrors snippet)))
+              (t
+               nil))))
     (unless (or (null snippets) snippets-left)
       (when snippet-exit-transform
         (yas--eval-for-effect snippet-exit-transform))
