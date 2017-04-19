@@ -3307,8 +3307,8 @@ This renders the snippet as ordinary text."
         (yas--advance-end-maybe previous-field yas-snippet-end)))
 
     ;; Convert all markers to points,
-    ;;
-    (yas--markers-to-points snippet)
+    ;; 下面这个表达式报错
+    ;; (yas--markers-to-points snippet)
 
     ;; Take care of snippet revival
     ;;
@@ -3407,17 +3407,44 @@ If so cleans up the whole snippet up."
   (let* ((snippets (yas-active-snippets 'all))
          (snippets-left snippets)
          (snippet-exit-transform)
+         (control-overlay nil)
+         (first-snippet nil)
          ;; Record the custom snippet `yas-after-exit-snippet-hook'
          ;; set in the expand-env field.
          (snippet-exit-hook yas-after-exit-snippet-hook))
     (dolist (snippet snippets)
       (let ((active-field (yas--snippet-active-field snippet)))
+        (if (and (overlayp control-overlay)
+                 (overlay-start control-overlay)
+                 (overlay-end control-overlay))
+            (progn
+              (setf (yas--field-start active-field) (overlay-start control-overlay))
+              (setf (yas--field-end active-field) (overlay-end control-overlay)))
+          (progn
+            (setq first-snippet snippet)
+            (setq control-overlay (yas--snippet-control-overlay snippet)))
+          )
+        ;; (if (and
+        ;;      (yas--snippet-force-exit snippet)
+        ;;      (equal snippet first-snippet)
+        ;;      )
+        ;;     ;; 满足上面的条件, 很糟糕, 本来是嵌套缩写退出, 变成外层退出
+        ;;     ;; 外层 snippet 捕获到 exit 信号, 这是错误
+        ;;     ;; 短路
+        ;;     (progn
+        ;;       ;; (setq snippet first-snippet)
+        ;;       ;; (setq active-field (yas--snippet-active-field snippet))
+        ;;       (setq snippet-exit-transform t))
+        ;;   )
+        ;; (yas--move-to-field snippet active-field)
+        ;; (overlay-end (yas--snippet-control-overlay snippet))
         (yas--letenv (yas--snippet-expand-env snippet)
           ;; Note: the `force-exit' field could be a transform in case of
           ;; ${0: ...}, see `yas--move-to-field'.
           (setq snippet-exit-transform (yas--snippet-force-exit snippet))
           (cond ((or snippet-exit-transform
                      (not (and active-field (yas--field-contains-point-p active-field))))
+                 (setq snippet-exit-transform nil)
                  (setq snippets-left (delete snippet snippets-left))
                  (setf (yas--snippet-force-exit snippet) nil)
                  (setq snippet-exit-hook yas-after-exit-snippet-hook)
