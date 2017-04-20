@@ -3414,6 +3414,9 @@ If so cleans up the whole snippet up."
          (snippet-exit-hook yas-after-exit-snippet-hook))
     (dolist (snippet snippets)
       (let ((active-field (yas--snippet-active-field snippet)))
+        (print ">>>>>>>>>>>> in dolist >>>>>>>>>>>>")
+        (print snippet)
+        (print active-field)
         (if (and (overlayp control-overlay)
                  (overlay-start control-overlay)
                  (overlay-end control-overlay))
@@ -3462,7 +3465,8 @@ If so cleans up the whole snippet up."
                  (yas--move-to-field snippet active-field)
                  (yas--update-mirrors snippet)))
               (t
-               nil))))
+               nil)))
+      (print "<<<<<<<<<< in dolist <<<<<<<<<<<"))
     (unless (or (null snippets) snippets-left)
       (when snippet-exit-transform
         (yas--eval-for-effect snippet-exit-transform))
