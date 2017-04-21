@@ -49,15 +49,35 @@ window-configuration-change-hook
     (yas-minor-mode t))
   )
 
-
-(yas-expand-snippet "${1:test1}")
+edebug-on-quit
+edebug-on-error
+(yas-expand-snippet "${1:test1}")test1: t11 t12  t13
 (clear-message-buffer)
+
+  yas--find-next-field(1 nil [cl-struct-yas--field 3 #<marker at 2065 in test.el> #<marker at 2071 in test.el> nil nil nil t nil])
+  yas-next-field()
+  yas-next-field-or-maybe-expand()
+  call-interactively(yas-next-field-or-maybe-expand nil nil)
+  command-execute(yas-next-field-or-maybe-expand)
+
+(memq 3 (list 1 2 3 4 5))
+
+http://www.jianshu.com/p/f509c9a9cac0
+https://www.gnu.org/software/emacs/manual/html_node/elisp/Error-Debugging.html#Error-Debugging
+https://www.gnu.org/software/emacs/manual/html_node/elisp/Debugger-Commands.html#Debugger-Commands
+https://www.gnu.org/software/emacs/manual/html_node/elisp/Edebug-Execution-Modes.html#Edebug-Execution-Modes
+https://www.gnu.org/software/emacs/manual/html_node/elisp/Edebug.html
+M-x toggle-debug-on-error RET
+debug-on-error
+(setq debug-on-signal t)
+error yas-next-field
+error yas-active-snippets
 
 
 (yas-expand-snippet "${1:test1} ---- $1")
 (yas-expand-snippet "${1:test1} --$0-- $1")
 
-
+;; i spc
 
 ;; 全局变量 字典 window-layouts 
 ;; test.el message yas.el 3个窗口
@@ -70,3 +90,17 @@ window-configuration-change-hook
 
 入参, 结果, 关键地方
 
+(defun aborn/debug-demo ()
+  "debug demo function"
+  (interactive)
+  (let ((a "a")
+        (b "value b")
+        (c 1))
+    (debug)
+    (message "middle")
+    (setq c (+ 1 c))
+    (xyz "a")
+    (message "ggg")
+    ))
+
+(aborn/debug-demo)

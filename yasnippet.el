@@ -3183,7 +3183,11 @@ Otherwise delegate to `yas-next-field'."
                         (and (not (eq field active))
                              (yas--field-probably-deleted-p snippet field)))
                       (yas--snippet-fields snippet))))
-    (nth (abs n) (memq active (if (>= n 0) live-fields (reverse live-fields))))))
+    ;; (nth (abs n) (memq active (if (>= n 0) live-fields (reverse live-fields))))
+    (or
+     (nth (abs n) (memq active (if (>= n 0) live-fields (reverse live-fields))))
+     (car live-fields))
+    ))
 
 (defun yas-next-field (&optional arg)
   "Navigate to the ARGth next field.
@@ -3308,7 +3312,7 @@ This renders the snippet as ordinary text."
 
     ;; Convert all markers to points,
     ;; 下面这个表达式报错
-    ;; (yas--markers-to-points snippet)
+    (yas--markers-to-points snippet)
 
     ;; Take care of snippet revival
     ;;
@@ -3486,8 +3490,10 @@ If so cleans up the whole snippet up."
 (defun yas--markers-to-points (snippet)
   "Save all markers of SNIPPET as positions."
   (yas--snippet-map-markers (lambda (m)
-                              (prog1 (cons (marker-position m) m)
-                                (set-marker m nil)))
+                              (if (markerp m)
+                                  (prog1 (cons (marker-position m) m)
+                                    (set-marker m nil)))
+                              (cons m m))
                             snippet))
 
 (defun yas--points-to-markers (snippet)
