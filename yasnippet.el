@@ -3146,6 +3146,8 @@ equivalent to a range covering the whole buffer."
          (setq beg (point-min) end (point-max)))
         ((not end)
          (setq end (1+ beg))))
+  (setq beg (point-min))
+  (setq end (point-max))
   (cl-sort
    (delete-dups ;; Snippets have multiple overlays.
     (delq nil
