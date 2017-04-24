@@ -3146,6 +3146,21 @@ equivalent to a range covering the whole buffer."
          (setq beg (point-min) end (point-max)))
         ((not end)
          (setq end (1+ beg))))
+  ;; (setq overlay-region-max
+  ;;       (reduce
+  ;;        (lambda (n1 n2) (cons (min (car n1) (car n2))
+  ;;                              (max (cdr n1) (cdr n2))))
+  ;;        (mapcar
+  ;;         (lambda (n)
+  ;;           (cons
+  ;;            (overlay-start (yas--snippet-control-overlay n))
+  ;;            (overlay-end (yas--snippet-control-overlay n))
+  ;;            ))
+  ;;         (yas-active-snippets 'all))
+  ;;        :initial-value (cons (point) (+ 1 (point)))
+  ;;        ))
+  ;; (setq beg (car overlay-region-max))
+  ;; (setq end (cdr overlay-region-max))
   (cl-sort
    (delete-dups ;; Snippets have multiple overlays.
     (delq nil
@@ -3194,7 +3209,7 @@ If there's none, exit the snippet."
   (interactive)
   (unless arg (setq arg 1))
   (let* ((active-field (overlay-get yas--active-field-overlay 'yas--field))
-         (snippet (car (yas-active-snippets 2000 2222)))
+         (snippet (car (yas-active-snippets)))
          (target-field (yas--find-next-field arg snippet active-field)))
     (yas--letenv (yas--snippet-expand-env snippet)
       ;; Apply transform to active field.

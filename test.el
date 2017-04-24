@@ -57,6 +57,7 @@ edebug-on-error
 (yas-expand-snippet "${1}")
 (clear-message-buffer)
 
+;; 最后不是他的锅
   yas--find-next-field(1 nil [cl-struct-yas--field 3 #<marker at 2065 in test.el> #<marker at 2071 in test.el> nil nil nil t nil])
   yas-next-field()
   yas-next-field-or-maybe-expand()
@@ -86,9 +87,12 @@ error yas-active-snippets
 ;; test.el message yas.el 3个窗口
 
 
+最后是它的锅
 (swiper-other-window "defun yas-active-snippets" "./yasnippet.el")
+(swiper-other-window "defun yas-next-field" "./yasnippet.el")
 (swiper-other-window "defun yas--find-next-field" "./yasnippet.el")
 (swiper-other-window "d.*n yas--check-commit-snippet" "./yasnippet.el")
+(swiper-other-window "d.*n yas-expand-snippet" "./yasnippet.el")
 
 准备埋prin1
 
@@ -108,3 +112,36 @@ error yas-active-snippets
     ))
 
 (aborn/debug-demo)
+
+取最大和最小的范围
+(yas-active-snippets 'all)
+(setq control-overlay (yas--snippet-control-overlay snippet))
+(overlay-start control-overlay)
+
+(reduce
+ (lambda (n1 n2) (list (min (car n1) (car n2))
+                       (max (nth 1 n1) (nth 1 n2))))
+ '(
+   (2 5)
+   (3 4)
+   (1 2)
+   (4 6)
+   )
+ :initial-value '(2 3)
+ )
+
+(fuck)
+
+(defun fuck ()
+  (reduce
+   (lambda (n1 n2) (cons (min (car n1) (car n2))
+                         (max (cdr n1) (cdr n2))))
+   (mapcar
+    (lambda (n)
+      (cons
+       (overlay-start (yas--snippet-control-overlay n))
+       (overlay-end (yas--snippet-control-overlay n))
+       ))
+    (yas-active-snippets 'all))
+   :initial-value (cons (point) (+ 1 (point)))
+   ))
