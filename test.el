@@ -44,14 +44,17 @@ window-configuration-change-hook
   (progn
     (setq yas-good-grace nil)
     (yas-load-directory "~/a0_emacs_lib/yas-test")
-    (load-file "/home/william/a0_emacs_lib/forks/modes/yasnippet/yasnippet-debug.el")
+    (load-file "~/emacs_libs/modes/yasnippet/yasnippet-debug.el")
     (yas-minor-mode 0)
     (yas-minor-mode t))
   )
 
 edebug-on-quit
 edebug-on-error
-(yas-expand-snippet "${1:test1}")test1: t11 t12  t13
+(yas-expand-snippet "${1:test1}") 
+;; 下面这个C-u 然后全部 C-i 无报错跑通, 但是有警告 Killing zombie snippet!
+(yas-expand-snippet "${1:test1} 2:${2:test1}")
+(yas-expand-snippet "${1}")
 (clear-message-buffer)
 
   yas--find-next-field(1 nil [cl-struct-yas--field 3 #<marker at 2065 in test.el> #<marker at 2071 in test.el> nil nil nil t nil])
@@ -83,7 +86,8 @@ error yas-active-snippets
 ;; test.el message yas.el 3个窗口
 
 
-(swiper-other-window "defun yas--check-commit-snippet" "./yasnippet.el")
+(swiper-other-window "defun yas-active-snippets" "./yasnippet.el")
+(swiper-other-window "defun yas--find-next-field" "./yasnippet.el")
 (swiper-other-window "d.*n yas--check-commit-snippet" "./yasnippet.el")
 
 准备埋prin1

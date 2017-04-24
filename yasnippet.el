@@ -3184,9 +3184,7 @@ Otherwise delegate to `yas-next-field'."
                              (yas--field-probably-deleted-p snippet field)))
                       (yas--snippet-fields snippet))))
     ;; (nth (abs n) (memq active (if (>= n 0) live-fields (reverse live-fields))))
-    (or
      (nth (abs n) (memq active (if (>= n 0) live-fields (reverse live-fields))))
-     (car live-fields))
     ))
 
 (defun yas-next-field (&optional arg)
@@ -3195,8 +3193,8 @@ Otherwise delegate to `yas-next-field'."
 If there's none, exit the snippet."
   (interactive)
   (unless arg (setq arg 1))
-  (let* ((snippet (car (yas-active-snippets)))
-         (active-field (overlay-get yas--active-field-overlay 'yas--field))
+  (let* ((active-field (overlay-get yas--active-field-overlay 'yas--field))
+         (snippet (car (yas-active-snippets 2000 2222)))
          (target-field (yas--find-next-field arg snippet active-field)))
     (yas--letenv (yas--snippet-expand-env snippet)
       ;; Apply transform to active field.
