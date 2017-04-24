@@ -3159,8 +3159,8 @@ equivalent to a range covering the whole buffer."
   ;;         (yas-active-snippets 'all))
   ;;        :initial-value (cons (point) (+ 1 (point)))
   ;;        ))
-  ;; (setq beg (car overlay-region-max))
-  ;; (setq end (cdr overlay-region-max))
+  (setq beg (point-min))
+  (setq end (point-max))
   (cl-sort
    (delete-dups ;; Snippets have multiple overlays.
     (delq nil

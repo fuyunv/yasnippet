@@ -51,7 +51,7 @@ window-configuration-change-hook
 
 edebug-on-quit
 edebug-on-error
-(yas-expand-snippet "${1:test1}") 
+(yas-expand-snippet "${1:test1}")
 ;; 下面这个C-u 然后全部 C-i 无报错跑通, 但是有警告 Killing zombie snippet!
 (yas-expand-snippet "${1:test1} 2:${2:test1}")
 (yas-expand-snippet "${1}")
