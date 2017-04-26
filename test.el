@@ -79,6 +79,7 @@ error yas-active-snippets
 
 
 (yas-expand-snippet "${1:test1} ---- $1")
+;; 下面这个有bug, 结束后 overlay 没有消失
 (yas-expand-snippet "${1:test1} --$0-- $1")
 
 ;; i spc
