@@ -3027,6 +3027,7 @@ ENV is a list of elements with the form (VAR FORM)."
   "Apply FUN to all marker (sub)fields in SNIPPET.
 Update each field with the result of calling FUN."
   (dolist (field (yas--snippet-fields snippet))
+    ;; 嵌套, 里层退出后, 外层snippet在这里报错
     (setf (yas--field-start field) (funcall fun (yas--field-start field)))
     (setf (yas--field-end field)   (funcall fun (yas--field-end field)))
     (dolist (mirror (yas--field-mirrors field))
@@ -3469,8 +3470,10 @@ If so cleans up the whole snippet up."
 (defun yas--markers-to-points (snippet)
   "Save all markers of SNIPPET as positions."
   (yas--snippet-map-markers (lambda (m)
-                              (prog1 (cons (marker-position m) m)
-                                (set-marker m nil)))
+                              (if (markerp m)
+                                  (prog1 (cons (marker-position m) m)
+                                    (set-marker m nil)))
+                              m)
                             snippet))
 
 (defun yas--points-to-markers (snippet)
