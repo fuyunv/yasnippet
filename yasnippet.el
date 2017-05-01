@@ -3472,8 +3472,10 @@ If so cleans up the whole snippet up."
   (yas--snippet-map-markers (lambda (m)
                               (if (markerp m)
                                   (prog1 (cons (marker-position m) m)
-                                    (set-marker m nil)))
-                              m)
+                                    ;; 就是这里造成外层的mark失效, 从而不能 C-z undo
+                                    ;; (set-marker m nil)
+                                    ))
+                              (cons m (move-marker (make-marker) m)))
                             snippet))
 
 (defun yas--points-to-markers (snippet)

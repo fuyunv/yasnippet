@@ -189,7 +189,41 @@ yas--auto-fill 有可能造成换行
 yas pre hook 关闭 my-normal-mode
 
 
-嵌套结束, 外层 mark 报错
+;; fix: 嵌套结束, 外层 mark 报错
+buffer-undo-list
+
+(add-hook 'name-hook 'function)
+
+(yas-expand-snippet "${1:test1}")
+
+(move-marker (make-marker) 111)
+
+
+(push `(apply yas--snippet-revive ,yas-snippet-beg ,yas-snippet-end ,snippet) buffer-undo-list)
+;; ====>
+yas--snippet-revive
+;; ====>
+yas--points-to-markers
+;; ====>
+yas--snippet-map-markers
+;; ====> 用在 yas--points-to-markers 内部, 这是个有效的debug方法
+yas--snippet-map-markers2
+(defun yas--snippet-map-markers2 (fun snippet)
+  "Apply FUN to all marker (sub)fields in SNIPPET.
+Update each field with the result of calling FUN."
+  (dolist (field (yas--snippet-fields snippet))
+    ;; 嵌套, 里层退出后, 外层snippet在这里报错
+    (setf (yas--field-start field) (funcall fun (yas--field-start field)))
+    (setf (yas--field-end field)   (funcall fun (yas--field-end field)))
+    (dolist (mirror (yas--field-mirrors field))
+      (setf (yas--mirror-start mirror) (funcall fun (yas--mirror-start mirror)))
+      (setf (yas--mirror-end mirror)   (funcall fun (yas--mirror-end mirror)))))
+  (let ((snippet-exit (yas--snippet-exit snippet)))
+    (when snippet-exit
+      (setf (yas--exit-marker snippet-exit)
+            (funcall fun (yas--exit-marker snippet-exit))))))
+
+;; 上面的问题解决, 但是 C-z 时候的active-field和光标都还不太如意 
 
 zobbie 警告:
 (yas-expand-snippet "${1:test1}") $3 C-k lam 
