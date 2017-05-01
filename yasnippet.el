@@ -3409,17 +3409,30 @@ If so cleans up the whole snippet up."
   (let* ((snippets (yas-active-snippets 'all))
          (snippets-left snippets)
          (snippet-exit-transform)
+         (control-overlay nil)
+         (first-snippet nil)
          ;; Record the custom snippet `yas-after-exit-snippet-hook'
          ;; set in the expand-env field.
          (snippet-exit-hook yas-after-exit-snippet-hook))
     (dolist (snippet snippets)
       (let ((active-field (yas--snippet-active-field snippet)))
+        (if (and (overlayp control-overlay)
+                 (overlay-start control-overlay)
+                 (overlay-end control-overlay))
+            (progn
+              (setf (yas--field-start active-field) (overlay-start control-overlay))
+              (setf (yas--field-end active-field) (overlay-end control-overlay)))
+          (progn
+            (setq first-snippet snippet)
+            (setq control-overlay (yas--snippet-control-overlay snippet)))
+          )
         (yas--letenv (yas--snippet-expand-env snippet)
           ;; Note: the `force-exit' field could be a transform in case of
           ;; ${0: ...}, see `yas--move-to-field'.
           (setq snippet-exit-transform (yas--snippet-force-exit snippet))
           (cond ((or snippet-exit-transform
                      (not (and active-field (yas--field-contains-point-p active-field))))
+                 (setq snippet-exit-transform nil)
                  (setq snippets-left (delete snippet snippets-left))
                  (setf (yas--snippet-force-exit snippet) nil)
                  (setq snippet-exit-hook yas-after-exit-snippet-hook)
