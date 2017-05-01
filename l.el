@@ -190,3 +190,6 @@ yas pre hook 关闭 my-normal-mode
 
 
 嵌套结束, 外层 mark 报错
+
+zobbie 警告:
+(yas-expand-snippet "${1:test1}") $3 C-k lam 
