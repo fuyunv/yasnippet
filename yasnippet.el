@@ -4722,7 +4722,7 @@ object satisfying `yas--field-p' to restrict the expansion to.")))
 
 ;;; Utils
 
-(defvar yas-verbosity 3
+(defvar yas-verbosity 4
   "Log level for `yas--message' 4 means trace most anything, 0 means nothing.")
 
 (defun yas--message (level message &rest args)
