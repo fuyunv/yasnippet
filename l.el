@@ -227,3 +227,60 @@ Update each field with the result of calling FUN."
 
 zobbie 警告:
 (yas-expand-snippet "${1:test1}") $3 C-k lam 
+
+
+;; 重命名key和name, 用于helm, 检查emacs-mode的yas key
+
+重写mapcar的yas,
+add-hook 需要换行,
+
+
+'func ==> lambda
+
+接受默认的东西:
+C-i 接受并跳到下一个
+C-u 接受并扩展
+不接受的东西:
+C-d 删除并跳到下一个 C-l
+C-k 替换
+
+
+(yas--table-all-keys (car (yas--get-snippet-tables)))
+
+(defun yas--table-all-names (table)
+  (ht-map
+             (lambda (key value)
+               (let (name)
+                 (setq name
+                       (car             ;ht-keys 返回列表
+                        (ht-keys value)))))
+             (yas--table-hash table)))
+
+(yas--table-all-names (car (yas--get-snippet-tables)))
+
+
+(member "ff" (list "ff3" "d" "b" "e" "ff" "ff2" "b"))
+(-contains? (list "ff3" "d" "b" "e" "ff" "ff2" "b") "ff")
+
+
+(-contains? (yas--table-all-keys (car (yas--get-snippet-tables))) "mp")
+
+(yas-load-directory "~/a0_emacs_lib/yas-for-emacs")
+(yas-)
+
+(add-hook 'bala-hook (lambda (n) (mapcar (lambda (n) )
+                                         'list))
+          )
+
+
+(add-hook 'yas-before-expand-snippet-hook (lambda () (my-normal-off))
+          )
+
+
+yas-tools
+访问各种东西的api
+
+上一个field, 下一个field
+
+yas-next-field
+                             yas-prev-field
