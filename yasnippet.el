@@ -3454,8 +3454,7 @@ If so cleans up the whole snippet up."
     (unless (or (null snippets) snippets-left)
       (when snippet-exit-transform
         (yas--eval-for-effect snippet-exit-transform))
-      (let ((yas-after-exit-snippet-hook snippet-exit-hook))
-        (yas--safely-run-hook 'yas-after-exit-snippet-hook)))))
+      (yas--safely-run-hook 'yas-after-exit-snippet-hook))))
 
 ;; Apropos markers-to-points:
 ;;
